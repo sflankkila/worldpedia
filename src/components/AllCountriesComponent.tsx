@@ -3,6 +3,7 @@
 import { FC } from "react";
 import Image from "next/image";
 import useSWR from "swr";
+import Loading from "@/app/dashboard/loading";
 
 const fetcher = async (url: string) => {
   const response = await fetch(url);
@@ -11,18 +12,14 @@ const fetcher = async (url: string) => {
 };
 
 const DataComponent: FC = () => {
-  const { data, error } = useSWR("https://restcountries.com/v3.1/all", fetcher);
-
-  if (error) {
-    return <div>Error loading data</div>;
-  }
+  const { data } = useSWR("https://restcountries.com/v3.1/all", fetcher, {});
 
   if (!data) {
-    return <div>Loading...</div>;
+    return <Loading/>;
   }
 
   return (
-    <div className="grid grid-cols-2 grid-rows-2 gap-4 lg:grid-cols-6">
+    <div className="grid grid-cols-1 grid-rows-2 gap-4 lg:grid-cols-6">
       {data.map((item: any, index: any) => (
         <div key={index} className="max-w-sm rounded overflow-hidden shadow-lg bg-white">
           {/* Render the data from each object */}
@@ -35,11 +32,11 @@ const DataComponent: FC = () => {
           />
           <div className="px-6 py-4 grid">
             <div className="font-bold text-xl mb-2">{item.name.common}</div>
-            <p className="text-gray-700 text-base">
+            <div className="text-gray-700 text-base">
               <p>Capital: {item.capital}</p>
               <p>Region: {item.region}</p>
               <p>Population: {item.population}</p>
-            </p>
+            </div>
           </div>
         </div>
       ))}
